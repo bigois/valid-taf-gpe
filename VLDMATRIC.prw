@@ -12,7 +12,7 @@ Browse para exibicao das Matriculas Incorretas
 @Version 1.0
 /*/
 //-------------------------------------------------------------------
-Function U_VLDMATRIC()
+Function U_VldMatric()
     Local oSize      := FwDefSize():New(.F.)
     Local oDlgIds    := NIL
     Local oBrowseIds := NIL 
@@ -30,6 +30,15 @@ Function U_VLDMATRIC()
     ACTIVATE MsDialog oDlgIds CENTERED 
 Return (NIL)
 
+//-------------------------------------------------------------------
+/*/{Protheus.doc} TAFDiagnose
+Identica as matriculas incorretas e as retorna para o browser
+
+@Author  Thiago Fernandes da Silva
+@Since   15/10/2019
+@Version 1.0
+/*/
+//-------------------------------------------------------------------
 Function U_TAFDiagnose(oMsgRun, oBrowseIds)
     Local cQuery := "SELECT "
     Local cAlias := GetNextAlias()
@@ -43,6 +52,15 @@ Function U_TAFDiagnose(oMsgRun, oBrowseIds)
     TCQUERY cQuery ALIAS cAlias NEW    
 Return (cAlias)
 
+//-------------------------------------------------------------------
+/*/{Protheus.doc} TAFBtnOk
+Ajusta as matriculas com divergência (alteração realizada na SRA)
+
+@Author  Thiago Fernandes da Silva
+@Since   15/10/2019
+@Version 1.0
+/*/
+//-------------------------------------------------------------------
 Static Function TAFBtnOk() 
     Local cQuery := "UPDATE "+ RetSQLName("SRA") + CLRF
 
