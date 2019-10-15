@@ -330,3 +330,4 @@ ASALocalRun/
 .mfractor/
 .vscode/launch.json
 VALID-TAF-GPE.code-workspace
+.vscode/settings.json
