@@ -1,6 +1,8 @@
 #Include "TOTVS.ch"
 #Include "TOPCONN.ch"
 
+#Define CLRF Chr(10) + Chr(13)
+
 //-------------------------------------------------------------------
 /*/{Protheus.doc} VLDMATRIC
 Browse para exibicao das Matriculas Incorretas
@@ -10,7 +12,7 @@ Browse para exibicao das Matriculas Incorretas
 @Version 1.0
 /*/
 //-------------------------------------------------------------------
-User Function VLDMATRIC()
+Function U_VLDMATRIC()
     Local oSize      := FwDefSize():New(.F.)
     Local oDlgIds    := NIL
     Local oBrowseIds := NIL 
@@ -19,7 +21,7 @@ User Function VLDMATRIC()
         oBrowseIds := MBrowse():New(NIL, NIL, NIL, "oBrowseIds")
             oBrowseIds:SetOwner(oDlgIds)
 
-            oBrowseIds:AddButton("Ajustar Matriculas", {|| FWMsgRun(NIL, {|oMsg| BtnOk()}, "Ajuste de Matriculas", "Selecionando matriculas para ajuste...")}) 
+            oBrowseIds:AddButton("Ajustar Matriculas", {|| FwMsgRun(NIL, {|oMsg| BtnOk()}, "Ajuste de Matriculas", "Selecionando matriculas para ajuste...")}) 
             oBrowseIds:AddButton("Visualizar Registros", {|| oBrowseIds:ShowIdsDuplic()}) 
             oBrowseIds:AddButton("Exibir Matriculas Ajustadas", {|| oBrowseIds:ShowIdsAjusts()}) 
         oBrowseIds:Activate()
@@ -28,56 +30,33 @@ User Function VLDMATRIC()
     ACTIVATE MsDialog oDlgIds CENTERED 
 Return (NIL)
 
-user Function TafBrwIdsDup(oMsgRun,oBrowseIds)
+Function U_TAFDiagnose(oMsgRun, oBrowseIds)
+    Local cQuery := "SELECT "
+    Local cAlias := GetNextAlias()
 
-    Local cSql := ""
-    Local cLastFil:= ""
-    Local cFilbckp := ""
-    Local aAreaSM0 := SM0->(getArea())
-    Local cCodGrpEmp := FWGrpCompany()
-    Local cNewId := ""
-    Local cAliasTab := getnextalias()
-    Local nTry := 0
-    Local nRecTaf := 0
-    Local lLoopId := .T.
-    Local lChangeTab := .F.
-    Local lMakeSomething := .F.
-    Local oModel := Nil 
-    Local cFonte := ""
-    Local cNomeEvt := ""
-    Local cSeed := ""
-    Local nSeed := 0
-    Local aCtdUpd := {}
+	cQuery += "SRA.RA_FILIAL, SRA.RA_NOME, SRA.RA_CIC, SRA.RA_CODUNIC, SRA.R_E_C_N_O_, SRA.RA_SITFOLH,  SRA.D_E_L_E_T_"
+	cQuery += "FROM " + RetSQLName("SRA") + " SRA " + CLRF
+    cQuery += "JOIN " + RetSQLName("C9V") + " C9V ON  RA_CIC = C9V_CPF AND RA_SITFOLH='' AND C9V_DTTRAN='' AND RA_FILIAL=C9V_FILIAL  AND C9V_NOMEVE ='S2200'" + CLRF
+    cQuery += "	AND RA_CODUNIC <> C9V_MATRIC AND C9V.D_E_L_E_T_ != '*' AND C9V_ATIVO = 1 AND RA_FILIAL = C9V_FILIAL" + CLRF
+    cQuery += " AND SRA.D_E_L_E_T_ <> '*'"
 
-    cSql := "SELECT"
-	cSql += "SRA.RA_FILIAL, SRA.RA_NOME, SRA.RA_CIC, SRA.RA_CODUNIC, SRA.R_E_C_N_O_, SRA.RA_SITFOLH,  SRA.D_E_L_E_T_"
-	cSql += "FROM " + RetSqlName("SRA") + " SRA "          + STR_PULA
-    cSql += "JOIN " + RetSqlName("C9V") + " C9V ON  RA_CIC = C9V_CPF AND RA_SITFOLH='' AND C9V_DTTRAN='' AND RA_FILIAL=C9V_FILIAL  AND C9V_NOMEVE ='S2200'"                + STR_PULA
-    cSql += "	AND RA_CODUNIC <> C9V_MATRIC AND C9V.D_E_L_E_T_ != '*' AND C9V_ATIVO = 1 AND RA_FILIAL = C9V_FILIAL"                          + STR_PULA
-    cSql += " AND SRA.D_E_L_E_T_ <> '*'"
-
-    TCQUERY cSql ALIAS cAliasTab NEW
-    // TCQUERY cQuery ALIAS "DLG" NEW
-
-    
-
-    
-Return  cAliasTab
+    TCQUERY cQuery ALIAS cAlias NEW    
+Return (cAlias)
 
 static function btnok() 
 
 Local cUpdt := "" 
 
- cUpdt :="UPDATE "+ RetSqlName("SRA")             + STR_PULA
- cUpdt +="SET  RA_CODUNIC = C9V.C9V_MATRIC FROM " + RetSqlName("SRA") + " SRA "          + STR_PULA
- cUpdt +="INNER JOIN "+ RetSqlName("C9V") + " C9V ON  RA_CIC = C9V_CPF AND RA_SITFOLH='' AND C9V_DTTRAN='' AND RA_FILIAL=C9V_FILIAL  AND C9V_NOMEVE ='S2200'"                + STR_PULA
- cUpdt += "	AND RA_CODUNIC <> C9V_MATRIC AND C9V.D_E_L_E_T_ != '*' AND C9V_ATIVO = 1 AND RA_FILIAL = C9V_FILIAL"                          + STR_PULA
+ cUpdt :="UPDATE "+ RetSqlName("SRA")             + CLRF
+ cUpdt +="SET  RA_CODUNIC = C9V.C9V_MATRIC FROM " + RetSqlName("SRA") + " SRA "          + CLRF
+ cUpdt +="INNER JOIN "+ RetSqlName("C9V") + " C9V ON  RA_CIC = C9V_CPF AND RA_SITFOLH='' AND C9V_DTTRAN='' AND RA_FILIAL=C9V_FILIAL  AND C9V_NOMEVE ='S2200'"                + CLRF
+ cUpdt += "	AND RA_CODUNIC <> C9V_MATRIC AND C9V.D_E_L_E_T_ != '*' AND C9V_ATIVO = 1 AND RA_FILIAL = C9V_FILIAL"                          + CLRF
  cUpdt += " AND SRA.D_E_L_E_T_ <> '*'"
 
 If tcsSqlExec(cUpdt) >0 
     msginfo("alterado com sucesso ")
 Else 
-    tcsqlerror()
+    tcQueryerror()
 endIf 
 
 
