@@ -8,38 +8,39 @@
 Browse para exibicao das Matriculas Incorretas
 
 @Author  Thiago Fernandes da Silva
+@Type User Function
 @Since   15/10/2019
 @Version 1.0
 /*/
 //-------------------------------------------------------------------
 Function U_VldMatric()
-    Local oSize      := FwDefSize():New(.F.)
-    Local oDlgIds    := NIL
-    Local oBrowseIds := NIL 
-
-    DEFINE MSDIALOG oDlgIds TITLE "Matriculas Divergentes" FROM oSize:aWindSize[1], oSize:aWindSize[2] TO oSize:aWindSize[3], oSize:aWindSize[4] PIXEL
-        oBrowseIds := MBrowse():New(NIL, NIL, NIL, "oBrowseIds")
-            oBrowseIds:SetOwner(oDlgIds)
-
-            oBrowseIds:AddButton("Ajustar Matriculas", {|| FwMsgRun(NIL, {|oMsg| TAFBtnOk()}, "Ajuste de Matriculas", "Selecionando matriculas para ajuste...")}) 
-            oBrowseIds:AddButton("Visualizar Registros", {|| oBrowseIds:ShowIdsDuplic()}) 
-            oBrowseIds:AddButton("Exibir Matriculas Ajustadas", {|| oBrowseIds:ShowIdsAjusts()}) 
-        oBrowseIds:Activate()
-
-        MsGetDados():New(nLinIni + 084, nColIni, nLinFin, nColFin, nOpcx, "VLDMATRIC", NIL, NIL, .T., aAltera, NIL, NIL, 200)
-    ACTIVATE MsDialog oDlgIds CENTERED 
+    Local oBrowse := FwLoadBrw("VLDMATRIC")
+    oBrowse:Activate()
 Return (NIL)
+
+Static Function BrowseDef()
+    oBrowse := FwMBrowse():New()
+    oBrowse:SetAlias("SB1")
+
+    oBrowse:SetDescription("Matrículas Divergentes")
+    oBrowse:DisableDetails()
+
+    oBrowse:SetIniWindow({|| MsgInfo("Esta rotina tem como objetivo validar e ajustar " +;
+                            "o controle de matrículas enviados ao eSocial.", "Bem-vindo!")})
+Return (oBrowse)
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} TAFDiagnose
 Identica as matriculas incorretas e as retorna para o browser
 
-@Author  Thiago Fernandes da Silva
-@Since   15/10/2019
+@Author Thiago Fernandes da Silva7
+@Type User Function
+@Since 15/10/2019
 @Version 1.0
+@return cAlias, Character, Alias da tabela temporária
 /*/
 //-------------------------------------------------------------------
-Function U_TAFDiagnose(oMsgRun, oBrowseIds)
+Function U_TAFDiagnose()
     Local cQuery := "SELECT "
     Local cAlias := GetNextAlias()
 
@@ -57,6 +58,7 @@ Return (cAlias)
 Ajusta as matriculas com divergência (alteração realizada na SRA)
 
 @Author  Thiago Fernandes da Silva
+@Type User Function
 @Since   15/10/2019
 @Version 1.0
 /*/
