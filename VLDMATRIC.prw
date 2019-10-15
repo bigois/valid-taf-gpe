@@ -11,29 +11,22 @@ Browse para exibicao das Matriculas Incorretas
 /*/
 //-------------------------------------------------------------------
 User Function VLDMATRIC()
+    Local oSize      := FwDefSize():New(.F.)
+    Local oDlgIds    := NIL
+    Local oBrowseIds := NIL 
 
-    Local oSize := Nil
-    Local oDlgIds := Nil 
+    DEFINE MSDIALOG oDlgIds TITLE "Matriculas Divergentes" FROM oSize:aWindSize[1], oSize:aWindSize[2] TO oSize:aWindSize[3], oSize:aWindSize[4] PIXEL
+        oBrowseIds := MBrowse():New(NIL, NIL, NIL, "oBrowseIds")
+            oBrowseIds:SetOwner(oDlgIds)
 
-    Private oBrowseIds := Nil 
+            oBrowseIds:AddButton("Ajustar Matriculas", {|| FWMsgRun(NIL, {|oMsg| BtnOk()}, "Ajuste de Matriculas", "Selecionando matriculas para ajuste...")}) 
+            oBrowseIds:AddButton("Visualizar Registros", {|| oBrowseIds:ShowIdsDuplic()}) 
+            oBrowseIds:AddButton("Exibir Matriculas Ajustadas", {|| oBrowseIds:ShowIdsAjusts()}) 
+        oBrowseIds:Activate()
 
-    oSize := FwDefSize():New(.F.)
-
-    Define MsDialog oDlgIds Title "Matriculas Divergentes" From oSize:aWindSize[1],oSize:aWindSize[2] To oSize:aWindSize[3],oSize:aWindSize[4]  Pixel //"Monitor e-Social - Visão Consolidada"
-
-    oBrowseIds:= MBROWSE():New(,,,"oBrowseIds")
-    oBrowseIds:SetOwner(oDlgIds)
-    oBrowseIds:AddButton("Ajustar Matriculas.",{||FWMsgRun(,{|oMsg|btnok()(oMsg,oBrowseIds)},"Ajuste de Matriculas","Selecionando Matriculas para Ajuste ...") }) 
-    oBrowseIds:AddButton("Visualizar Registros",{||oBrowseIds:showIdsDuplic()}) 
-    oBrowseIds:AddButton("Exibir Matriculas Ajustadas",{||oBrowseIds:showIdsAjusts()}) 
-
-    oBrowseIds:Activate()
-
-    MsGetDados():New(nLinIni+084,nColIni,nLinFin,nColFin,nOpcx,"VLDMATRIC",,,.T.,aAltera,,,200)
-    
-    Activate MsDialog oDlgIds Centered 
-
-Return Nil 
+        MsGetDados():New(nLinIni + 084, nColIni, nLinFin, nColFin, nOpcx, "VLDMATRIC", NIL, NIL, .T., aAltera, NIL, NIL, 200)
+    ACTIVATE MsDialog oDlgIds CENTERED 
+Return (NIL)
 
 user Function TafBrwIdsDup(oMsgRun,oBrowseIds)
 
