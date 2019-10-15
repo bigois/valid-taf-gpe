@@ -43,7 +43,7 @@ Function U_TAFDiagnose(oMsgRun, oBrowseIds)
     TCQUERY cQuery ALIAS cAlias NEW    
 Return (cAlias)
 
-static function btnok() 
+Static Function TAFBtnOk() 
 
 Local cUpdt := "" 
 
