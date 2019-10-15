@@ -2,7 +2,7 @@
 #Include "TOPCONN.ch"
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} TFSHOWEVTSDP
+/*/{Protheus.doc} VLDMATRIC
 Browse para exibicao das Matriculas Incorretas
 
 @Author  Thiago Fernandes da Silva
@@ -10,7 +10,7 @@ Browse para exibicao das Matriculas Incorretas
 @Version 1.0
 /*/
 //-------------------------------------------------------------------
-user Function TFSHOWEVTSDP()
+User Function VLDMATRIC()
 
     Local oSize := Nil
     Local oDlgIds := Nil 
@@ -29,7 +29,7 @@ user Function TFSHOWEVTSDP()
 
     oBrowseIds:Activate()
 
-    MsGetDados():New(nLinIni+084,nColIni,nLinFin,nColFin,nOpcx,"TFSHOWEVTSDP",,,.T.,aAltera,,,200)
+    MsGetDados():New(nLinIni+084,nColIni,nLinFin,nColFin,nOpcx,"VLDMATRIC",,,.T.,aAltera,,,200)
     
     Activate MsDialog oDlgIds Centered 
 
