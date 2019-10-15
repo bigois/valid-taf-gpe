@@ -21,7 +21,7 @@ Function U_VLDMATRIC()
         oBrowseIds := MBrowse():New(NIL, NIL, NIL, "oBrowseIds")
             oBrowseIds:SetOwner(oDlgIds)
 
-            oBrowseIds:AddButton("Ajustar Matriculas", {|| FwMsgRun(NIL, {|oMsg| BtnOk()}, "Ajuste de Matriculas", "Selecionando matriculas para ajuste...")}) 
+            oBrowseIds:AddButton("Ajustar Matriculas", {|| FwMsgRun(NIL, {|oMsg| TAFBtnOk()}, "Ajuste de Matriculas", "Selecionando matriculas para ajuste...")}) 
             oBrowseIds:AddButton("Visualizar Registros", {|| oBrowseIds:ShowIdsDuplic()}) 
             oBrowseIds:AddButton("Exibir Matriculas Ajustadas", {|| oBrowseIds:ShowIdsAjusts()}) 
         oBrowseIds:Activate()
@@ -44,20 +44,16 @@ Function U_TAFDiagnose(oMsgRun, oBrowseIds)
 Return (cAlias)
 
 Static Function TAFBtnOk() 
+    Local cQuery := "UPDATE "+ RetSQLName("SRA") + CLRF
 
-Local cUpdt := "" 
+    cQuery += "SET  RA_CODUNIC = C9V.C9V_MATRIC FROM " + RetSQLName("SRA") + " SRA "  + CLRF
+    cQuery += "INNER JOIN "+ RetSQLName("C9V") + " C9V ON  RA_CIC = C9V_CPF AND RA_SITFOLH='' AND C9V_DTTRAN='' AND RA_FILIAL=C9V_FILIAL  AND C9V_NOMEVE ='S2200'" + CLRF
+    cQuery += "	AND RA_CODUNIC <> C9V_MATRIC AND C9V.D_E_L_E_T_ != '*' AND C9V_ATIVO = 1 AND RA_FILIAL = C9V_FILIAL" + CLRF
+    cQuery += " AND SRA.D_E_L_E_T_ <> '*'"
 
- cUpdt :="UPDATE "+ RetSqlName("SRA")             + CLRF
- cUpdt +="SET  RA_CODUNIC = C9V.C9V_MATRIC FROM " + RetSqlName("SRA") + " SRA "          + CLRF
- cUpdt +="INNER JOIN "+ RetSqlName("C9V") + " C9V ON  RA_CIC = C9V_CPF AND RA_SITFOLH='' AND C9V_DTTRAN='' AND RA_FILIAL=C9V_FILIAL  AND C9V_NOMEVE ='S2200'"                + CLRF
- cUpdt += "	AND RA_CODUNIC <> C9V_MATRIC AND C9V.D_E_L_E_T_ != '*' AND C9V_ATIVO = 1 AND RA_FILIAL = C9V_FILIAL"                          + CLRF
- cUpdt += " AND SRA.D_E_L_E_T_ <> '*'"
-
-If tcsSqlExec(cUpdt) >0 
-    msginfo("alterado com sucesso ")
-Else 
-    tcQueryerror()
-endIf 
-
-
-return 
+    If (TCSQLExec(cQuery) > 0 )
+        MsgInfo("Alterado com sucesso!")
+    Else 
+        TCQueryError()
+    EndIf 
+Return (NIL)
