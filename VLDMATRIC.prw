@@ -160,7 +160,7 @@ Function U_TAFOneAdj()
 Return (NIL)
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} TAFOneAdj
+/*/{Protheus.doc} TAFAllAdj
 Ajusta as matriculas com divergência (alteração realizada na SRA)
 
 @Author  Thiago Fernandes da Silva
