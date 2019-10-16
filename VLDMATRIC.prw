@@ -56,6 +56,7 @@ Static Function BrowseDef()
     oBrowse:SetAlias(aTableDef[1])
     oBrowse:SetQueryIndex(aTableDef[2])
     oBrowse:SetFields(aTableDef[3])
+    oBrowse:SetFieldFilter(GenFilterFld(aTableDef[3]))
     oBrowse:DisableDetails()
     oBrowse:SetDescription("Matrículas Divergentes")
     oBrowse:SetMenuDef("VLDMATRIC")
@@ -177,3 +178,22 @@ Static Function TAFBtnOk()
         TCQueryError()
     EndIf 
 Return (NIL)
+
+Static Function GenFilterFld(aFields)
+    Local cPicture := Space(0)
+    Local aFilter  := {}      
+    Local nX       := 0       
+
+    For nX := 1 To Len(aFields)
+        Do Case
+            Case (aFields[nX][3] == "C")
+                cPicture := "@!"
+            Case (aFields[nX][3] == "N")
+                cPicture := "@E 99999999"
+            Case (aFields[nX][3] == "D")
+                cPicture := Space(0)
+        EndCase
+
+        AAdd(aFilter, {aFields[nX][2], aFields[nX][1], aFields[nX][3], aFields[nX][4], aFields[nX][5], cPicture})
+    Next nX
+Return (aFilter)
