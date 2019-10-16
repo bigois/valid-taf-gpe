@@ -74,6 +74,7 @@ Browse para exibição das matriculas incorretas
 //-------------------------------------------------------------------
 Static Function TableDef()
     Local nX     := 0
+    Local aAux   := {}
     Local aTable := {}
     Local aField := {}
     Local aIndex := {}
@@ -87,20 +88,22 @@ Static Function TableDef()
     AAdd(aField, {"Matric. TAF", "TMP_MTAF",   "C", GetSX3Cache("X3_TAMANHO", "C9V_MATRIC")})
     AAdd(aField, {"Matric. GPE", "TMP_MGPE",   "C", GetSX3Cache("X3_TAMANHO", "RA_CODUNIC")})
 
-    oTable:SetFields(aField)
+    aAux := Array(Len(aField))
+    
+    For nX := 1 To Len(aField)
+        aAux[nX] := {aField[nX][2], aField[nX][3], aField[nX][4], aField[nX][5]}
+    Next nX
+
+    oTable:SetFields(aAux)
 
     AAdd(aIndex, {"TMP_FILIAL", "TMP_FUNC"})
     AAdd(aIndex, {"TMP_FILIAL", "TMP_CPF"})
-    
+
     For nX := 1 To Len(aIndex)
         oTable:AddIndex(StrZero(nX, 2), aIndex[nX])
     Next nX
 
     oTable:Create()
-
-    For nX := 1 To Len(aField)
-        aField[nX] := {aField[nX][2], aField[nX][3], aField[nX][4], aField[nX][5]}
-    Next nX
 
     DbSelectArea(cAlias)
     SQLToTrb(cQuery, aField, cAlias)
