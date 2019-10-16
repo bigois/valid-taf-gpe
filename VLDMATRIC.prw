@@ -139,17 +139,17 @@ Ajusta as matriculas com divergência (alteração realizada na SRA)
 /*/
 //-------------------------------------------------------------------
 Function U_TAFBtnOk() 
-    Local cQuery := "UPDATE " + RetSQLName("SRA")
+    Local cQuery := "UPDATE " + RetSQLName("SRA") + " "
 
     cQuery += "SET SRA.RA_CODUNIC = C9V.C9V_MATRIC "
     cQuery += "FROM " + RetSQLName("SRA") + " SRA "
     cQuery += "INNER JOIN " + RetSQLName("C9V") + " C9V "
     cQuery += "ON SRA.RA_CIC = C9V.C9V_CPF AND SRA.RA_FILIAL = C9V.C9V_FILIAL AND SRA.RA_FILIAL = C9V.C9V_FILIAL AND SRA.RA_CODUNIC <> C9V.C9V_MATRIC "
-    cQuery += "WHERE SRA.RA_SITFOLH = '' AND C9V.C9V_DTTRAN = '' AND C9V.C9V_ATIVO = 1 AND C9V.C9V_NOMEVE = 'S2200' AND C9V.D_E_L_E_T_ <> '*' AND SRA.D_E_L_E_T_ <> '*';"
-    cQuery := ChangeQuery(cQuery)
+    cQuery += "WHERE SRA.RA_CIC = '" + TMP_CPF + "'SRA.RA_SITFOLH = '' AND C9V.C9V_DTTRAN = '' AND C9V.C9V_ATIVO = 1 AND C9V.C9V_NOMEVE = 'S2200' AND C9V.D_E_L_E_T_ <> '*' AND SRA.D_E_L_E_T_ <> '*';"
 
     If (TCSQLExec(cQuery) > 0)
         MsgInfo("Alterado com sucesso!")
+        
     Else 
         TCQueryError()
     EndIf 
