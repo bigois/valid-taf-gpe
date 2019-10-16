@@ -52,10 +52,13 @@ Static Function BrowseDef()
     Local oBrowse := FwMBrowse():New()
     Local aTableDef := TableDef()
     
-    oBrowse:SetAlias("SB1")
-    oBrowse:SetMenuDef("VLDMATRIC")
-    oBrowse:SetDescription("Matrículas Divergentes")
+    oBrowse:SetTemporary(.T.)
+    oBrowse:SetAlias(aTableDef[1])
+    oBrowse:SetQueryIndex(aTableDef[2])
+    oBrowse:SetFields(aTableDef[3])
     oBrowse:DisableDetails()
+    oBrowse:SetDescription("Matrículas Divergentes")
+    oBrowse:SetMenuDef("VLDMATRIC")
 
     oBrowse:SetIniWindow({|| MsgInfo("Esta rotina tem como objetivo validar e ajustar " +;
                             "o controle de matrículas enviados ao eSocial.", "Bem-vindo!")})
