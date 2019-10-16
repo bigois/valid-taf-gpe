@@ -153,9 +153,8 @@ Function U_TAFBtnOk()
         MsUnlock()
 
         MsgInfo("Alterado com sucesso!")
-        
     Else 
-        TCQueryError()
+        TCSQLError()
     EndIf 
 Return (NIL)
 
