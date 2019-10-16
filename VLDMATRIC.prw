@@ -149,6 +149,10 @@ Function U_TAFBtnOk()
     cQuery := ChangeQuery(cQuery)
 
     If (TCSQLExec(cQuery) > 0)
+        RecLock(cAlias, .F.)
+            DbDelete()
+        MsUnlock()
+
         MsgInfo("Alterado com sucesso!")
     Else 
         TCQueryError()
