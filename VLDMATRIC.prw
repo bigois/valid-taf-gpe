@@ -194,8 +194,8 @@ Function U_TAFAllAdj()
 Return (NIL)
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} TAFAllAdj
-Ajusta as matriculas com divergência (alteração realizada na SRA)
+/*/{Protheus.doc} GenFilterFld
+Formata o vetor da estrutura de campos x filtro
 
 @Author  Thiago Fernandes da Silva
 @Type User Function
