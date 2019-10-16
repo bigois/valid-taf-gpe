@@ -139,7 +139,7 @@ Ajusta as matriculas com divergência (alteração realizada na SRA)
 /*/
 //-------------------------------------------------------------------
 Function U_TAFBtnOk() 
-    Local cFunc := TMP_FUNC
+    Local cFunc := AllTrim(TMP_FUNC)
     Local cQuery := "UPDATE " + RetSQLName("SRA") + " "
 
     cQuery += "SET RA_CODUNIC = C9V_MATRIC "
