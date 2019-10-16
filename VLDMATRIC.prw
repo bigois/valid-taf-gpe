@@ -31,8 +31,8 @@ Definição das operações da rotina
 Static Function MenuDef()
     Local aMenu := {}
 
-    ADD OPTION aMenu TITLE "Ajustar"   ACTION "U_TAFBtnOk"           OPERATION MODEL_OPERATION_UPDATE ACCESS 0
-    ADD OPTION aMenu TITLE "Atualizar" ACTION "MsgInfo('Atualizar')" OPERATION MODEL_OPERATION_VIEW   ACCESS 0
+    ADD OPTION aMenu TITLE "Ajuste Individual" ACTION "U_TAFOneAdj" OPERATION MODEL_OPERATION_UPDATE ACCESS 0
+    ADD OPTION aMenu TITLE "Ajuste Geral"      ACTION "U_TAFAllAdj" OPERATION MODEL_OPERATION_UPDATE ACCESS 0
 Return (aMenu)
 
 //-------------------------------------------------------------------
@@ -129,8 +129,8 @@ Static Function TableDef()
 Return (aTable)
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} TAFBtnOk
-Ajusta as matriculas com divergência (alteração realizada na SRA)
+/*/{Protheus.doc} TAFOneAdj
+Ajusta a matricula com divergência (alteração realizada na SRA)
 
 @Author  Thiago Fernandes da Silva
 @Type User Function
@@ -138,7 +138,7 @@ Ajusta as matriculas com divergência (alteração realizada na SRA)
 @Version 1.0
 /*/
 //-------------------------------------------------------------------
-Function U_TAFBtnOk() 
+Function U_TAFOneAdj() 
     Local cFunc := AllTrim(TMP_FUNC)
     Local cQuery := "UPDATE " + RetSQLName("SRA") + " "
 
@@ -154,6 +154,40 @@ Function U_TAFBtnOk()
         MsUnlock()
 
         MsgInfo("Matrícula do funcionário " + cFunc + " ajustada com sucesso!")
+    Else 
+        TCSQLError()
+    EndIf 
+Return (NIL)
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} TAFOneAdj
+Ajusta as matriculas com divergência (alteração realizada na SRA)
+
+@Author  Thiago Fernandes da Silva
+@Type User Function
+@Since   15/10/2019
+@Version 1.0
+/*/
+//-------------------------------------------------------------------
+Function U_TAFAllAdj() 
+    Local cQuery := "UPDATE " + RetSQLName("SRA") + " "
+
+    cQuery += "SET RA_CODUNIC = C9V_MATRIC "
+    cQuery += "FROM " + RetSQLName("SRA") + " SRA "
+    cQuery += "INNER JOIN " + RetSQLName("C9V") + " C9V "
+    cQuery += "ON SRA.RA_CIC = C9V.C9V_CPF AND SRA.RA_FILIAL = C9V.C9V_FILIAL AND SRA.RA_FILIAL = C9V.C9V_FILIAL AND SRA.RA_CODUNIC <> C9V.C9V_MATRIC "
+    cQuery += "WHERE SRA.RA_SITFOLH = '' AND C9V.C9V_DTTRAN = '' AND C9V.C9V_ATIVO = 1 AND C9V.C9V_NOMEVE = 'S2200' AND C9V.D_E_L_E_T_ <> '*' AND SRA.D_E_L_E_T_ <> '*';"
+
+    If (TCSQLExec(cQuery) == 0)
+        While (!EOF())
+            RecLock(Alias(), .F.)
+                DbDelete()
+            MsUnlock()
+
+            DbSkip()
+        End
+
+        MsgInfo("Matrículas ajustadas com sucesso!")
     Else 
         TCSQLError()
     EndIf 
