@@ -54,7 +54,7 @@ Static Function BrowseDef()
     oBrowse:SetAlias(aTableDef[1])
     oBrowse:SetQueryIndex(aTableDef[2])
     oBrowse:SetFields(aTableDef[3])
-    oBrowse:SetFieldFilter(GenFilterFld(aTableDef[3]))
+    oBrowse:SetFieldFilter(U_GenFilterFld(aTableDef[3]))
     oBrowse:DisableDetails()
     oBrowse:SetDescription("Matrículas Divergentes")
     oBrowse:SetMenuDef("VLDMATRIC")
@@ -193,7 +193,19 @@ Function U_TAFAllAdj()
     EndIf 
 Return (NIL)
 
-Static Function GenFilterFld(aFields)
+//-------------------------------------------------------------------
+/*/{Protheus.doc} TAFAllAdj
+Ajusta as matriculas com divergência (alteração realizada na SRA)
+
+@Author  Thiago Fernandes da Silva
+@Type User Function
+@Since   15/10/2019
+@Param aFields, Array, Vetor com os campos do browser
+@Return aFilter, Array, Vetor com a estrutura de filtro do browse
+@Version 1.0
+/*/
+//-------------------------------------------------------------------
+Function U_GenFilterFld(aFields)
     Local cPicture := Space(0)
     Local aFilter  := {}      
     Local nX       := 0       
