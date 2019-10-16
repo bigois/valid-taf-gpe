@@ -107,18 +107,18 @@ Static Function TableDef()
 
     DbSelectArea(cAlias)
 
-    cQuery += "SELECT SRA.RA_FILIAL AS TMP_FILIAL, SRA.RA_NOME AS TMP_FUNC, SRA.RA_CIC AS TMP_CPF, C9V.C9V_MATRIC AS TMP_MTAF, SRA.RA_CODUNIC AS TMP_MGPE"
+    cQuery += "SELECT SRA.RA_FILIAL AS TMP_FILIAL, SRA.RA_NOME AS TMP_FUNC, SRA.RA_CIC AS TMP_CPF, C9V.C9V_MATRIC AS TMP_MTAF, SRA.RA_CODUNIC AS TMP_MGPE "
     cQuery += "FROM " + RetSQLName("SRA") + " SRA "
     cQuery += "INNER JOIN " + RetSQLName("C9V") + " C9V " 
     cQuery += "ON SRA.RA_CIC = C9V.C9V_CPF AND SRA.RA_FILIAL = C9V.C9V_FILIAL AND SRA.RA_CODUNIC <> C9V.C9V_MATRIC AND RA_FILIAL = C9V_FILIAL "
     cQuery += "WHERE SRA.RA_SITFOLH = '' AND C9V.C9V_DTTRAN = '' AND C9V.C9V_NOMEVE = 'S2200' AND C9V.C9V_ATIVO = 1 AND C9V.D_E_L_E_T_ <> '*' AND SRA.D_E_L_E_T_ <> '*';"
     cQuery := ChangeQuery(cQuery)
 
-    SQLToTrb(cQuery, aField, cAlias)
+    SQLToTrb(cQuery, aAux, cAlias)
     DbGoTop()
 
     For nX := 1 To Len(aIndex)
-        aIndex[nX] := aIndex[nX][1] + aIndex[nX][2]
+        aIndex[nX] := aIndex[nX][1] + "+" + aIndex[nX][2]
     Next nX
 
     AAdd(aTable, cAlias)
