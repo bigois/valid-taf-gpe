@@ -148,7 +148,7 @@ Function U_TAFBtnOk()
     cQuery += "WHERE SRA.RA_CIC = '" + TMP_CPF + "' AND SRA.RA_SITFOLH = '' AND C9V.C9V_DTTRAN = '' AND C9V.C9V_ATIVO = 1 AND C9V.C9V_NOMEVE = 'S2200' AND C9V.D_E_L_E_T_ <> '*' AND SRA.D_E_L_E_T_ <> '*';"
 
     If (TCSQLExec(cQuery) == 0)
-        RecLock(cAlias, .F.)
+        RecLock(Alias(), .F.)
             DbDelete()
         MsUnlock()
 
