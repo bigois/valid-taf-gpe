@@ -82,14 +82,14 @@ Static Function TableDef()
     Local cAlias := GetNextAlias()
     Local oTable := FwTemporaryTable():New(cAlias)
 
-    AAdd(aField, {"Filial",      "TMP_FILIAL", "C", GetSX3Cache("X3_TAMANHO", "RA_FILIAL")})
-    AAdd(aField, {"Funcionário", "TMP_FUNC",   "C", GetSX3Cache("X3_TAMANHO", "RA_NOME")})
-    AAdd(aField, {"CPF",         "TMP_CPF",    "C", GetSX3Cache("X3_TAMANHO", "RA_CIC")})
-    AAdd(aField, {"Matric. TAF", "TMP_MTAF",   "C", GetSX3Cache("X3_TAMANHO", "C9V_MATRIC")})
-    AAdd(aField, {"Matric. GPE", "TMP_MGPE",   "C", GetSX3Cache("X3_TAMANHO", "RA_CODUNIC")})
+    AAdd(aField, {"Filial",      "TMP_FILIAL", "C", TamSX3("RA_FILIAL")[1],  0})
+    AAdd(aField, {"Funcionário", "TMP_FUNC",   "C", TamSX3("RA_NOME")[1],    0})
+    AAdd(aField, {"CPF",         "TMP_CPF",    "C", TamSX3("RA_CIC")[1],     0})
+    AAdd(aField, {"Matric. TAF", "TMP_MTAF",   "C", TamSX3("C9V_MATRIC")[1], 0})
+    AAdd(aField, {"Matric. GPE", "TMP_MGPE",   "C", TamSX3("RA_CODUNIC")[1], 0})
 
     aAux := Array(Len(aField))
-    
+
     For nX := 1 To Len(aField)
         aAux[nX] := {aField[nX][2], aField[nX][3], aField[nX][4], aField[nX][5]}
     Next nX
