@@ -81,11 +81,11 @@ Static Function TableDef()
     Local cAlias := GetNextAlias()
     Local oTable := FwTemporaryTable():New(cAlias)
 
-    AAdd(aField, "Filial",      "TMP_FILIAL", "C", GetSX3Cache("X3_TAMANHO", "RA_FILIAL"))
-    AAdd(aField, "Funcionário", "TMP_FUNC",   "C", GetSX3Cache("X3_TAMANHO", "RA_NOME"))
-    AAdd(aField, "CPF",         "TMP_CPF",    "C", GetSX3Cache("X3_TAMANHO", "RA_CIC"))
-    AAdd(aField, "Matric. TAF", "TMP_MTAF",   "C", GetSX3Cache("X3_TAMANHO", "C9V_MATRIC"))
-    AAdd(aField, "Matric. GPE", "TMP_MGPE",   "C", GetSX3Cache("X3_TAMANHO", "RA_CODUNIC"))
+    AAdd(aField, {"Filial",      "TMP_FILIAL", "C", GetSX3Cache("X3_TAMANHO", "RA_FILIAL")})
+    AAdd(aField, {"Funcionário", "TMP_FUNC",   "C", GetSX3Cache("X3_TAMANHO", "RA_NOME")})
+    AAdd(aField, {"CPF",         "TMP_CPF",    "C", GetSX3Cache("X3_TAMANHO", "RA_CIC")})
+    AAdd(aField, {"Matric. TAF", "TMP_MTAF",   "C", GetSX3Cache("X3_TAMANHO", "C9V_MATRIC")})
+    AAdd(aField, {"Matric. GPE", "TMP_MGPE",   "C", GetSX3Cache("X3_TAMANHO", "RA_CODUNIC")})
 
     oTable:SetFields(aField)
 
