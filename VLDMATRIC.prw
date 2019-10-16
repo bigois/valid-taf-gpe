@@ -1,15 +1,16 @@
 #Include "TOTVS.ch"
 #Include "TOPCONN.ch"
+#Include "FWMVCDEF.ch"
 
 #Define CLRF Chr(10) + Chr(13)
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} VLDMATRIC
-Browse para exibicao das Matriculas Incorretas
+/*/{Protheus.doc} VldMatric
+Disponibiliza o browser para ajuste das matriculas incorretas
 
-@Author  Thiago Fernandes da Silva
+@Author Thiago Fernandes da Silva
 @Type User Function
-@Since   15/10/2019
+@Since 15/10/2019
 @Version 1.0
 /*/
 //-------------------------------------------------------------------
@@ -18,16 +19,101 @@ Function U_VldMatric()
     oBrowse:Activate()
 Return (NIL)
 
-Static Function BrowseDef()
-    oBrowse := FwMBrowse():New()
-    oBrowse:SetAlias("SB1")
+//-------------------------------------------------------------------
+/*/{Protheus.doc} MenuDef
+Definição das operações da rotina
 
+@Author Thiago Fernandes da Silva
+@Type User Function
+@Since 15/10/2019
+@Version 1.0
+@Return aMenu, Array, Object, Vetor contendo as operações da rotina
+/*/
+//-------------------------------------------------------------------
+Static Function MenuDef()
+    Local aMenu := {}
+
+    ADD OPTION aMenu TITLE "Ajustar"   ACTION "MsgInfo('Ajustar')"   OPERATION MODEL_OPERATION_UPDATE ACCESS 0
+    ADD OPTION aMenu TITLE "Atualizar" ACTION "MsgInfo('Atualizar')" OPERATION MODEL_OPERATION_VIEW   ACCESS 0
+Return (aMenu)
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} BrowseDef
+Browse para exibição das matriculas incorretas
+
+@Author Thiago Fernandes da Silva
+@Type User Function
+@Since 15/10/2019
+@Version 1.0
+@Return oBrowse, Object, Objeto contendo as definições da browser
+/*/
+//-------------------------------------------------------------------
+Static Function BrowseDef()
+    Local oBrowse := FwMBrowse():New()
+    Local aTableDef := TableDef()
+    
+    oBrowse:SetAlias("SB1")
+    oBrowse:SetMenuDef("VLDMATRIC")
     oBrowse:SetDescription("Matrículas Divergentes")
     oBrowse:DisableDetails()
 
     oBrowse:SetIniWindow({|| MsgInfo("Esta rotina tem como objetivo validar e ajustar " +;
                             "o controle de matrículas enviados ao eSocial.", "Bem-vindo!")})
 Return (oBrowse)
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} TableDef
+Browse para exibição das matriculas incorretas
+
+@Author Thiago Fernandes da Silva
+@Type User Function
+@Since 15/10/2019
+@Version 1.0
+@Return aTable, Array, Vetor com o alias, os índices e os campos
+/*/
+//-------------------------------------------------------------------
+Static Function TableDef()
+    Local nX     := 0
+    Local aTable := {}
+    Local aField := {}
+    Local aIndex := {}
+    Local cQuery := Space(0)
+    Local cAlias := GetNextAlias()
+    Local oTable := FwTemporaryTable():New(cAlias)
+
+    AAdd(aField, "Filial",      "TMP_FILIAL", "C", GetSX3Cache("X3_TAMANHO", "RA_FILIAL"))
+    AAdd(aField, "Funcionário", "TMP_FUNC",   "C", GetSX3Cache("X3_TAMANHO", "RA_NOME"))
+    AAdd(aField, "CPF",         "TMP_CPF",    "C", GetSX3Cache("X3_TAMANHO", "RA_CIC"))
+    AAdd(aField, "Matric. TAF", "TMP_MTAF",   "C", GetSX3Cache("X3_TAMANHO", "C9V_MATRIC"))
+    AAdd(aField, "Matric. GPE", "TMP_MGPE",   "C", GetSX3Cache("X3_TAMANHO", "RA_CODUNIC"))
+
+    oTable:SetFields(aField)
+
+    AAdd(aIndex, {"TMP_FILIAL", "TMP_FUNC"})
+    AAdd(aIndex, {"TMP_FILIAL", "TMP_CPF"})
+    
+    For nX := 1 To Len(aIndex)
+        oTable:AddIndex(StrZero(nX, 2), aIndex[nX])
+    Next nX
+
+    oTable:Create()
+
+    For nX := 1 To Len(aField)
+        aField[nX] := {aField[nX][2], aField[nX][3], aField[nX][4], aField[nX][5]}
+    Next nX
+
+    DbSelectArea(cAlias)
+    SQLToTrb(cQuery, aField, cAlias)
+    DbGoTop()
+
+    For nX := 1 To Len(aIndex)
+        aIndex[nX] := aIndex[nX][1] + aIndex[nX][2]
+    Next nX
+
+    AAdd(aTable, cAlias)
+    AAdd(aTable, aIndex)
+    AAdd(aTable, aField)
+Return (aTable)
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} TAFDiagnose
@@ -37,7 +123,7 @@ Identica as matriculas incorretas e as retorna para o browser
 @Type User Function
 @Since 15/10/2019
 @Version 1.0
-@return cAlias, Character, Alias da tabela temporária
+@Return cAlias, Character, Alias da tabela temporária
 /*/
 //-------------------------------------------------------------------
 Function U_TAFDiagnose()
